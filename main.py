@@ -9,8 +9,8 @@ with open("domains.txt") as domains:
 
     x = 0
     while x < len(content_list):
-        cmd = "wget -q -O - -U demo http://" + content_list[x] + " --header \"Host: domainfronter.pages.dev\""
+        cmd = "wget -q -O - -U demo http://" + content_list[x] + "/df.txt --header \"Host: domainfronter.pages.dev\""
         res = os.system(cmd)
-        if res.contains("domain fronting works!"):
-            print(content_list[x] + ": " + res)
+        print(cmd)
+        print(res)
         x += 1
