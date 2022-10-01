@@ -5,11 +5,12 @@ with open("domains.txt") as domains:
 
     for i in range(len(content_list)):
         content_list[i] = str(content_list[i])
-        content_list[i] = content_list[i].replace('\n','')
+        content_list[i] = content_list[i].replace('\n', '')
 
-    x=0
-    while x<len(content_list):
-        cmd = "wget -q -O - -U demo http://"+content_list[x]+" --header \"Host: domainfronter.pages.dev\""
+    x = 0
+    while x < len(content_list):
+        cmd = "wget -q -O - -U demo http://" + content_list[x] + " --header \"Host: domainfronter.pages.dev\""
         res = os.system(cmd)
-        print(res)
-        x+=1
+        if res.contains("domain fronting works!"):
+            print(content_list[x] + ": " + res)
+        x += 1
