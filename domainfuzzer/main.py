@@ -1,17 +1,20 @@
-import os
+import subprocess
+import sys
+import time
+import termcolor
+from termcolor import colored, cprint
+
 
 # Set user input as domain to fuzz
 domain = input("Domain: ")
-print("fuzzing top 1000 subdomains for "+domain+"...")
+print("fuzzing top 1000 subdomains for", end=" ")
+termcolor.cprint(domain, "red", attrs=["bold"], end="")
+print("...")
 
-# Create file to save successfully tested subdomains
 # Open bitquark top 100 subdomains and read each line into a list
 #
 # Updates are regularly made to this list on bitquark github
 # https://github.com/bitquark/dnspop
-results = open("working_subdomains.txt", "w")
-results.write("Working Subdomains for "+domain+"\n")
-results.close()
 with open("bitquark_20160227_subdomains_popular_1000") as subdomains:
     subdomains = subdomains.readlines()
 
@@ -21,18 +24,19 @@ for i in range(len(subdomains)):
     subdomains[i] = subdomains[i].replace('\n', '')
 
 # Run wget command with custom HTTP header pointed towards CloudFlare CDN instance
-x = 0
-with open("working_subdomains.txt", "w") as results:
-    while x < len(subdomains):
-        cmd = "wget -q -O - -U demo http://"+subdomains[x]+"."+domain+"/df.txt --header \"Host: domainfronter.pages.dev\""
-        res = os.system(cmd)
-        if res != "":
-            print(subdomains[x]+" fronted successfully")
-            print(cmd)
-            results.write(subdomains[x]+"\n")
-        else:
-            print(x+"...")
-        x += 1
+termcolor.cprint("Successful subdomains:", "green",attrs=["bold"])
+while len(subdomains) > 0:
+    subDomain = subdomains.pop()
+    cmd = "wget -q --connect-timeout=2 -O - -U demo http://" + subDomain + "." + domain + "/df.txt --header \"Host: domainfronter.pages.dev\""
+    sp = subprocess.Popen(str(cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                          universal_newlines=True)
+    rc = sp.wait()
+    out, err = sp.communicate()
+
+    if out == "domain fronting works!":
+        termcolor.cprint("   " + subDomain + "." + domain, "blue")
+    elif len(subdomains) % 100 == 0:
+        print(str(len(subdomains)) + " subdomains remaining...")
 
 # Future additions:
 #   -Create a "domainfronter.pages.dev" variant on each of the popular CDNs
