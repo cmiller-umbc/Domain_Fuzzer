@@ -17,7 +17,7 @@ Run domainfronter.py using *python3 domainfronter.py*
 
 ## Meta
 
-Charles Miller – https://www.linkedin.com/in/cmillercybsec/(https://twitter.com/dbader_org) – cmiller4@umbc.edu  
+Charles Miller – https://www.linkedin.com/in/cmillercybsec/ – cmiller4@umbc.edu  
 IS 701 - Independent Study: Domain Fronting  
 Dr. Augusto Casas - UMBC: MS in Information Systems  
 
