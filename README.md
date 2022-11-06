@@ -1,5 +1,5 @@
 # Subdomain Fuzzing Tools for Enumerating Domain Fronting Proxies
-### A python application used to prove concepts in  
+### A python application used to prove concepts in *Subdomain Enumeration for Identifying Domain Fronting Proxies (2022)* 
 https://docs.google.com/document/d/1NbrhF-ZcsJPxDE-pvl9mq373EM_iavCW/edit?usp=sharing&ouid=111027394185246946986&rtpof=true&sd=true
 
 domainfronter.py uses customized HTTP headers within wget statements to request the file domainfronter.pages.dev/df.txt from another domain within the CloudFlare CDN.
