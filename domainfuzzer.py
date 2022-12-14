@@ -9,7 +9,7 @@ from termcolor import colored, cprint
 
 # Set user input as domain to fuzz
 domain = input("Domain: ")
-num_thread = 10
+num_thread = 20
 print("fuzzing top 1000 subdomains for", end=" ")
 termcolor.cprint(domain, "red", attrs=["bold"], end="")
 print("...")
@@ -39,6 +39,8 @@ class thread_wget(threading.Thread):
     def run(self):
         # Add loop into this function to keep popping through the stack
         global subdomains
+        global counter
+        counter=0
         while len(subdomains) > 0:
             subDomain = subdomains.pop()
             cmd = "wget -q --connect-timeout=2 -O - -U demo http://" + subDomain + "." + domain + "/df.txt --header \"Host: domainfronter.pages.dev\""
@@ -49,12 +51,19 @@ class thread_wget(threading.Thread):
 
             if out == "domain fronting works!":
                 termcolor.cprint("   " + subDomain + "." + domain, "blue")
+                counter = counter + 1
+            elif len(subdomains) == 0:
+                break
             elif len(subdomains) % 100 == 0:
                 print(str(len(subdomains))+" subdomains remaining...")
-
+            
+        termcolor.cprint("Total viable subdomains: ", "blue", attrs=["bold"], end="")
+        termcolor.cprint(counter, "red")
 
 for i in range(0, num_thread):
     thread_wget(str(i)).start()
+
+
 
 # Future additions:
 #   -Create a "domainfronter.pages.dev" variant on each of the popular CDNs
