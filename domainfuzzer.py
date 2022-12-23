@@ -8,27 +8,23 @@ import termcolor
 from termcolor import colored, cprint
 
 # Set user input as domain to fuzz
-
-num_thread = 20
 domain = input("Domain: ")
+num_thread = 20
 print("fuzzing top 1000 subdomains for", end=" ")
 termcolor.cprint(domain, "red", attrs=["bold"], end="")
 print("...")
-
-with open("bitquark_20160227_subdomains_popular_1000") as subdomains:
-    subdomains = subdomains.readlines()
-    
-for i in range(len(subdomains)):
-    subdomains[i] = str(subdomains[i])
-    subdomains[i] = subdomains[i].replace('\n', '')
 
 # Open bitquark top 100 subdomains and read each line into a list
 #
 # Updates are regularly made to this list on bitquark github
 # https://github.com/bitquark/dnspop
+with open("bitquark_20160227_subdomains_popular_1000") as subdomains:
+    subdomains = subdomains.readlines()
 
-# Run wget command with custom HTTP header pointed towards CloudFlare CDN instance
-termcolor.cprint("Successful subdomains:", "green",attrs=["bold"])
+# Scrub new line character and parse to string
+for i in range(len(subdomains)):
+    subdomains[i] = str(subdomains[i])
+    subdomains[i] = subdomains[i].replace('\n', '')
 
 # def runWget(subDomains, domain):
 
@@ -40,33 +36,31 @@ class thread_wget(threading.Thread):
     def run(self):
         # Add loop into this function to keep popping through the stack
         global subdomains
-        global counter
-        counter=0
-        results = open("results.txt", "a")
-
         while len(subdomains) > 0:
             subDomain = subdomains.pop()
             cmd = "wget -q --connect-timeout=2 -O - -U demo http://" + subDomain + "." + domain + "/df.txt --header \"Host: domainfronter.pages.dev\""
             sp = subprocess.Popen(str(cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                universal_newlines=True)
+                                  universal_newlines=True)
             rc = sp.wait()
             out, err = sp.communicate()
 
             if out == "domain fronting works!":
                 termcolor.cprint("   " + subDomain + "." + domain, "blue")
-                results.writelines(subDomain + "\n")
-                counter = counter + 1
-            elif len(subdomains) == 0:
-                break
             elif len(subdomains) % 100 == 0:
                 print(str(len(subdomains))+" subdomains remaining...")
-            
-        termcolor.cprint("Total viable subdomains: ", "blue", attrs=["bold"], end="")
-        termcolor.cprint(counter, "red")
 
+arr = []
 for i in range(0, num_thread):
-    thread_wget(str(i)).start()
+    arr.appen(thread_wget(str(i)).start())
 
+cont = True
+while cont == True:
+    cont = False
+    for i in range(len(arr)):
+        if arr[i].is_alive() == True:
+            cont = True
+
+termcolor.cprint("Successful subdomains:", "green",attrs=["bold"])
 
 
 # Future additions:
