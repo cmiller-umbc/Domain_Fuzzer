@@ -1,0 +1,63 @@
+ChatGPT nginx redirector instructions
+
+Sure! Here are the instructions to build an Nginx redirector hosted in Azure using only resources available to a free Azure account:
+
+First, create a new Azure account if you don't have one already. You can sign up for a free Azure account at https://azure.microsoft.com/en-us/free/.
+
+Once you have an account, log in to the Azure portal at https://portal.azure.com/.
+
+From the Azure portal, click on "Create a resource" and search for "Ubuntu Server". Select "Ubuntu Server" from the list of results and click "Create".
+
+In the "Basics" tab, give your virtual machine a name and select the region you want to host it in. Under "Image", select "Ubuntu Server 18.04 LTS" (or a newer version if available). Under "Size", select "Standard B1ls" (which is available for free).
+
+In the "Administrator account" section, create a username and password to use for logging into your virtual machine. You can leave the "Inbound port rules" section as the default for now.
+
+Click "Review + create" and then "Create" to create your Ubuntu virtual machine.
+
+Once your virtual machine has been created, you will need to connect to it using an SSH client. If you are using a Windows computer, you can use PuTTY or the built-in Windows 10 SSH client. If you are using a Mac or Linux computer, you can use the built-in SSH client.
+
+In the Azure portal, click on your virtual machine to open its details page. Click on "Connect" at the top of the page to see the connection details.
+
+Connect to your virtual machine using your SSH client and the connection details provided in the Azure portal.
+
+Once you are connected to your virtual machine, run the following command to update your system packages:
+
+sql
+Copy code
+sudo apt-get update && sudo apt-get upgrade -y
+After updating your system, run the following command to install Nginx:
+csharp
+Copy code
+sudo apt-get install nginx -y
+Once Nginx is installed, create a new configuration file by running the following command:
+bash
+Copy code
+sudo nano /etc/nginx/sites-available/redirect
+In the Nano text editor, add the following configuration:
+perl
+Copy code
+server {
+    listen 80;
+    server_name example.com www.example.com;
+    return 301 https://www.example.com$request_uri;
+}
+Replace "example.com" with your own domain name.
+
+Press Ctrl+X to exit Nano, then press Y to save the file.
+
+Create a symbolic link to the configuration file by running the following command:
+
+bash
+Copy code
+sudo ln -s /etc/nginx/sites-available/redirect /etc/nginx/sites-enabled/
+Test the configuration by running the following command:
+Copy code
+sudo nginx -t
+If the test is successful, restart Nginx by running the following command:
+Copy code
+sudo systemctl restart nginx
+Finally, open port 80 in the Azure portal to allow HTTP traffic to your virtual machine. To do this, go to your virtual machine's details page and click on "Networking" under "Settings". Click on "Add inbound port rule", set the port range to "80", and click "Add".
+
+Your Nginx redirector should now be up and running! To test it, visit your domain in a web browser and make sure that it redirects to the desired URL.
+
+That's it! You've now built an Nginx redirector hosted in Azure using only resources available to a free Azure account.
