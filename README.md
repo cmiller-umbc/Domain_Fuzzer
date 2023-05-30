@@ -1,6 +1,6 @@
 # Subdomain Fuzzing Tools for Enumerating Domain Fronting Proxies
 ### A python application used to prove concepts in 
-https://docs.google.com/document/d/1NbrhF-ZcsJPxDE-pvl9mq373EM_iavCW/edit?usp=sharing&ouid=111027394185246946986&rtpof=true&sd=true
+[https://docs.google.com/document/d/1NbrhF-ZcsJPxDE-pvl9mq373EM_iavCW/edit?usp=sharing&ouid=111027394185246946986&rtpof=true&sd=true](https://docs.google.com/document/d/1USofoLX4JFpv8lrY80Q9qQFffe0Mmux12tTSfOccseM/edit?usp=sharing)
 
 domainfronter.py uses customized HTTP headers within wget statements to request the file domainfronter.pages.dev/df.txt from another domain within the CloudFlare CDN.
 For example: wget -q -O - -U http://www.nginx.com/df.txt --header "Host: domainfronter.pages.dev"
